@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import json
 import re
 import time
-from selenium import webdriver
+import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 
 from base_selenium import BaseSeleniumCrawler
@@ -13,7 +13,7 @@ class VozCrawler(BaseSeleniumCrawler):
     base_url = 'https://voz.vn/'
     DELAY_TIME = 3
 
-    def open_an_url(self, url: Text, browser: webdriver.Chrome):
+    def open_an_url(self, url: Text, browser: uc.Chrome):
         while True:
             try:
                 browser.delete_all_cookies()
@@ -25,7 +25,7 @@ class VozCrawler(BaseSeleniumCrawler):
                 browser = self.init_browser()
         return browser
 
-    def extract_thread_urls(self, category_name: Text, category_url: Text, browser: webdriver.Chrome) -> Set[Text]:
+    def extract_thread_urls(self, category_name: Text, category_url: Text, browser: uc.Chrome) -> Set[Text]:
         browser = self.open_an_url(category_url, browser)
         thread_urls = set()
         thread_cnt = 0
@@ -51,7 +51,7 @@ class VozCrawler(BaseSeleniumCrawler):
 
         return thread_urls
 
-    def extract_comments(self, url: Text, browser: webdriver.Chrome):
+    def extract_comments(self, url: Text, browser: uc.Chrome):
         browser = self.open_an_url(url, browser)
         title = browser.find_element(By.CSS_SELECTOR, 'h1.p-title-value').text
         data = []
@@ -76,7 +76,7 @@ class VozCrawler(BaseSeleniumCrawler):
             else:
                 return data, title
 
-    def get_all_category_urls(self, url: Text = None, browser: webdriver.Chrome = None) -> Dict[Text, Text]:
+    def get_all_category_urls(self, url: Text = None, browser: uc.Chrome = None) -> Dict[Text, Text]:
         if not browser: browser = self.init_browser()
         browser.get(url)
         categories = {}
@@ -86,7 +86,7 @@ class VozCrawler(BaseSeleniumCrawler):
             categories[category_name] = category_url
         return categories
 
-    def get_all_thread_urls(self, categories: Dict[Text, Text], browser: webdriver.Chrome = None) -> Dict[Text, Set[Text]]:
+    def get_all_thread_urls(self, categories: Dict[Text, Text], browser: uc.Chrome = None) -> Dict[Text, Set[Text]]:
         if not browser: browser = self.init_browser()
         urls_by_category = {}
         for category_name, category_url in categories.items():
@@ -98,7 +98,7 @@ class VozCrawler(BaseSeleniumCrawler):
             urls_by_category[category_name] = urls
         return urls_by_category
 
-    def get_all_content(self, urls_by_category: Dict[Text, Set[Text]], browser: webdriver.Chrome = None) -> None:
+    def get_all_content(self, urls_by_category: Dict[Text, Set[Text]], uc: webdriver.Chrome = None) -> None:
         for category_name, thread_urls in urls_by_category.items():
             print(f'==={category_name}===')
             with open(f"voz/Threads/{category_name}.json", 'w') as out_f:
