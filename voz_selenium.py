@@ -98,7 +98,7 @@ class VozCrawler(BaseSeleniumCrawler):
             urls_by_category[category_name] = urls
         return urls_by_category
 
-    def get_all_content(self, urls_by_category: Dict[Text, Set[Text]], uc: webdriver.Chrome = None) -> None:
+    def get_all_content(self, urls_by_category: Dict[Text, Set[Text]], browser: uc.Chrome = None) -> None:
         for category_name, thread_urls in urls_by_category.items():
             print(f'==={category_name}===')
             with open(f"voz/Threads/{category_name}.json", 'w') as out_f:
