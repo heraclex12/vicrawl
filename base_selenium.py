@@ -1,5 +1,5 @@
 from typing import Text, Dict, List, Any, Set
-from selenium import webdriver
+import undetected_chromedriver as uc
 
 
 class BaseSeleniumCrawler:
@@ -8,7 +8,7 @@ class BaseSeleniumCrawler:
 
     @staticmethod
     def init_browser():
-        options = webdriver.ChromeOptions()
+        options = uc.ChromeOptions()
         options.add_argument("--enable-javascript")
         options.add_argument("--window-size=1920,1080")
         options.add_argument("--disable-gpu")
@@ -18,22 +18,22 @@ class BaseSeleniumCrawler:
         options.add_argument(
             "user-agent={ Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, "
             "like Gecko) Chrome/78.0.3904.108 Mobile Safari/537.36 }")
-        browser = webdriver.Chrome(executable_path='chromedriver_linux64/chromedriver', options=options)
+        browser = uc.Chrome(options=options)
         return browser
 
-    def open_an_url(self, url: Text, browser: webdriver.Chrome):
+    def open_an_url(self, url: Text, browser: uc.Chrome):
         raise NotImplementedError()
 
-    def extract_thread_urls(self, category_name: Text, category_url: Text, browser: webdriver.Chrome) -> Set[Text]:
+    def extract_thread_urls(self, category_name: Text, category_url: Text, browser: uc.Chrome) -> Set[Text]:
         raise NotImplementedError()
 
-    def extract_comments(self, url: Text, browser: webdriver.Chrome):
+    def extract_comments(self, url: Text, browser: uc.Chrome):
         raise NotImplementedError()
 
-    def get_all_category_urls(self, url: Text = None, browser: webdriver.Chrome = None) -> Dict[Text, Text]:
+    def get_all_category_urls(self, url: Text = None, browser: uc.Chrome = None) -> Dict[Text, Text]:
         raise NotImplementedError()
 
-    def get_all_thread_urls(self, categories: Dict[Text, Text], browser: webdriver.Chrome = None) -> Dict[Text, Set[Text]]:
+    def get_all_thread_urls(self, categories: Dict[Text, Text], browser: uc.Chrome = None) -> Dict[Text, Set[Text]]:
         raise NotImplementedError()
 
     def get_all_content(self, urls_by_category, browser=None):
